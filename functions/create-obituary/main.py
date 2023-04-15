@@ -2,6 +2,8 @@ import base64
 import hashlib
 import os
 import boto3
+# create_obituary_url = "https://46ztutzdfa27mynq26mrqnfflu0vdjat.lambda-url.ca-central-1.on.aws/"
+# get_obituary_url = "https://atljom7p67ty535xlh7ygxv24m0ntzyj.lambda-url.ca-central-1.on.aws/"
 
 client = boto3.client('ssm')
 import requests
@@ -12,7 +14,7 @@ import time
 
 def lambda_handler(event, body):
     # read data and decode
-    body = event["body"]
+    body = event['body']    
     if event["isBase64Encoded"]:
         body = base64.b64decode(body)
 
@@ -36,7 +38,7 @@ def lambda_handler(event, body):
 
     # you only have access to the /tmp folder in lambda
     key = "obituary.png"
-    file_name = os.path.join("/temp", key)
+    file_name = os.path.join("/tmp", key)
     with open(file_name, "wb") as f:
         f.write(binary_data[0])
 
@@ -51,6 +53,20 @@ def lambda_handler(event, body):
     voice_url = cloudinary_Upload_API(voice_file, resource_type="raw")["secure_url"]
 
 
+    # saving to dynamodb
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('obituaries-30148859')
+    table.put_item(
+        Item={
+            "name": name,
+            "born": born,
+            "died": died,
+            "img": cloudinary_res["secure_url"],
+            "obituary": chat_gpt_res["text"],
+            "voice": voice_url
+        }
+    )
+
     return {
         "statusCode": 200,
         "message": "success",
@@ -61,11 +77,6 @@ def get_keys():
     keys = client.get_parameters_by_path(
     Path='/the-last-show/',
     Recursive=True,
-    ParameterFilters=[
-        {
-            'Key': 'string'
-        },
-    ],
     WithDecryption=True,
     )
     return keys
@@ -158,6 +169,7 @@ def ask_gpt(prompt):
     }
 
     res = requests.post(url, headers=headers, json=body)
+    print(res.json())
     return res.json()["choices"][0]["text"]
 
 def read_this(text, name):

@@ -19,9 +19,18 @@ locals {
   artifact_name = "artifact.zip"
 }
 
+# create archive file from main.py
+data "archive_file" "create-obituary-30140288" {
+  type = "zip"
+  # this file (main.py) needs to exist in the same folder as this 
+  # Terraform configuration file
+  source_dir = "../functions/create-obituary"
+  output_path = local.artifact_name
+}
+
 # create a role for the Lambda function to assume
 resource "aws_iam_role" "lambda" {
-  name               = "iam-for-lambda"
+  name               = "lambda-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -37,15 +46,6 @@ resource "aws_iam_role" "lambda" {
   ]
 }
 EOF
-}
-
-# create archive file from main.py
-data "archive_file" "create-obituary-30140288" {
-  type = "zip"
-  # this file (main.py) needs to exist in the same folder as this 
-  # Terraform configuration file
-  source_dir = "../functions/create-obituary"
-  output_path = local.artifact_name
 }
 
 # create a Lambda function
@@ -68,7 +68,7 @@ data "archive_file" "get-obituary-30140288" {
 
 resource "aws_lambda_function" "get-obituary-30140288" {
   role             = aws_iam_role.lambda.arn
-  function_name    = local.function_name
+  function_name    = local.second_function_name
   handler          = local.handler_name
   filename         = local.artifact_name
   source_code_hash = data.archive_file.get-obituary-30140288.output_base64sha256
@@ -76,10 +76,10 @@ resource "aws_lambda_function" "get-obituary-30140288" {
   runtime = "python3.9"
 }
 
-# create a policy for publishing logs to CloudWatch
+# create a policy for logging
 resource "aws_iam_policy" "logs_and_dynamodb" {
-  name        = "lambda-logging-and-dynamodb"
-  description = "IAM policy for logging and dynamodb access from a lambda"
+  name        = "lambda-logs"
+  description = "IAM policy for logging from a lambda"
 
   policy = <<EOF
 {
@@ -90,11 +90,11 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
-        "dynamodb:PutItem",
-        "dynamodb:GetItem",
+        "dynamodb:DeleteItem",
         "dynamodb:Query",
+        "ssm:GetParametersByPath"
       ],
-      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.obituaries-30148859.arn}"],
+      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.obituaries-30148859.arn}", "arn:aws:ssm:ca-central-1:564981883983:parameter/the-last-show/"],
       "Effect": "Allow"
     }
   ]
@@ -102,8 +102,7 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
 EOF
 }
 
-# attach the above policy to the function role
-# see the docs: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment
+# attach the logs policy to the function role
 resource "aws_iam_role_policy_attachment" "lambda_logs_and_dynamodb" {
   role       = aws_iam_role.lambda.name
   policy_arn = aws_iam_policy.logs_and_dynamodb.arn
