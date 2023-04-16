@@ -92,9 +92,10 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
         "logs:PutLogEvents",
         "dynamodb:DeleteItem",
         "dynamodb:Query",
-        "ssm:GetParametersByPath"
+        "ssm:GetParametersByPath",
+        "polly:SynthesizeSpeech"
       ],
-      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.obituaries-30148859.arn}", "arn:aws:ssm:ca-central-1:564981883983:parameter/the-last-show/"],
+      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.obituaries-30148859.arn}", "arn:aws:ssm:ca-central-1:564981883983:parameter/the-last-show/", "*"],
       "Effect": "Allow"
     }
   ]

@@ -22,6 +22,7 @@ def lambda_handler(event, body):
 
     # reading data from actual request
     data = decoder.MultipartDecoder(body, content_type)
+    print("data read")
 
     # returns parts of the data in binary
     binary_data = [part.content for part in data.parts]
@@ -36,21 +37,28 @@ def lambda_handler(event, body):
     born = binary_data[2].decode()
     died = binary_data[3].decode()
 
+    print("data decoded: ", name, born, died)
+
     # you only have access to the /tmp folder in lambda
     key = "obituary.png"
     file_name = os.path.join("/tmp", key)
     with open(file_name, "wb") as f:
         f.write(binary_data[0])
+    
+    print("img saved to tmp folder")
 
     # saving img to cloudinary url
-    cloudinary_res = cloudinary_Upload_API(file_name, extra_params={"eagers": "e_art:zorro, e_grayscale:true"})
+    cloudinary_res = cloudinary_Upload_API(file_name) #, extra_params={"eagers": "e_art:zorro"}
+    print("img saved to cloudinary:", cloudinary_res["secure_url"])
     
     # saving chat GPT response
-    chat_gpt_res = ask_gpt(f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}.")
+    chat_gpt_res = ask_gpt(f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}.") # f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}."
+    print("chat gpt response saved", chat_gpt_res)
 
     # saving voice url
-    voice_file = read_this(chat_gpt_res["text"], name)
+    voice_file = read_this(chat_gpt_res, name)
     voice_url = cloudinary_Upload_API(voice_file, resource_type="raw")["secure_url"]
+    print("voice saved to cloudinary")
 
 
     # saving to dynamodb
@@ -66,6 +74,7 @@ def lambda_handler(event, body):
             "voice": voice_url
         }
     )
+    print("saved to dynamodb")
 
     return {
         "statusCode": 200,
@@ -99,7 +108,7 @@ def cloudinary_Upload_API(filename, resource_type="image", extra_params=None):
     body = {
         "api_key": api_key,
     }
-    body.update(extra_params)
+    # body.update(extra_params)
 
     files = {
         "file": open(filename, "rb")
@@ -107,6 +116,7 @@ def cloudinary_Upload_API(filename, resource_type="image", extra_params=None):
 
     # create signature
     body["signature"] = create_signature(body, api_secret)
+    print("data:", body)
 
     # send req
     url = f"https://api.cloudinary.com/v1_1/{cloud_name}/{resource_type}/upload"
@@ -125,11 +135,14 @@ def create_signature(body, api_secret):
     exculde_keys = ["api_key", "source_types", "cloud_name"]
     timestamp = int(time.time())
     body["timestamp"] = timestamp
+    print("unsorted body:", body)
     # sort body keys
     sorted_body = sort_dict(body, exculde_keys)
+    print("sorted body:", sorted_body)
     # create string with sorted keys
     query_string = create_query_string(sorted_body)
     query_string_append = f"{query_string}{api_secret}"
+    print("query string:", query_string_append)
     hashed = hashlib.sha1(query_string_append.encode())
     signature = hashed.hexdigest()
     return signature
@@ -151,25 +164,24 @@ def create_query_string(body):
 
 # chatgpt send req
 def ask_gpt(prompt):
-    # TODO get api key from parameter store
     OPENAI_KEY = get_keys()["Parameters"][1]["Value"]
     url = "https://api.openai.com/v1/completions"
     # need to read api key from parameter store in AWS
     headers = {
-        "Content_Type": "application/json",
+        "Content-Type": "application/json",
         "Authorization": f"Bearer {OPENAI_KEY}"
     }
-
+    print("headers created")
     body = {
-        "model": "text-davinci-003",
+        "model":"text-davinci-003",
         "prompt": prompt,
-        "max_tokens": 400,
-        # more random responses
+        "max_tokens": 50,
         "temperature": 0.2
     }
+    print("body created")
 
     res = requests.post(url, headers=headers, json=body)
-    print(res.json())
+    print("request sent")
     return res.json()["choices"][0]["text"]
 
 def read_this(text, name):
