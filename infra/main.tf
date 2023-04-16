@@ -55,6 +55,7 @@ resource "aws_lambda_function" "create-obituary-30140288" {
   handler          = local.handler_name
   filename         = local.artifact_name
   source_code_hash = data.archive_file.create-obituary-30140288.output_base64sha256
+  timeout = 10
 
   # see all available runtimes here: https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
   runtime = "python3.9"
@@ -90,7 +91,7 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
-        "dynamodb:DeleteItem",
+        "dynamodb:PutItem",
         "dynamodb:Query",
         "ssm:GetParametersByPath",
         "polly:SynthesizeSpeech"

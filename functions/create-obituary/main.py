@@ -22,7 +22,6 @@ def lambda_handler(event, body):
 
     # reading data from actual request
     data = decoder.MultipartDecoder(body, content_type)
-    print("data read")
 
     # returns parts of the data in binary
     binary_data = [part.content for part in data.parts]
@@ -37,7 +36,6 @@ def lambda_handler(event, body):
     born = binary_data[2].decode()
     died = binary_data[3].decode()
 
-    print("data decoded: ", name, born, died)
 
     # you only have access to the /tmp folder in lambda
     key = "obituary.png"
@@ -45,7 +43,6 @@ def lambda_handler(event, body):
     with open(file_name, "wb") as f:
         f.write(binary_data[0])
     
-    print("img saved to tmp folder")
 
     # saving img to cloudinary url
     cloudinary_res = cloudinary_Upload_API(file_name) #, extra_params={"eagers": "e_art:zorro"}
@@ -70,7 +67,7 @@ def lambda_handler(event, body):
             "born": born,
             "died": died,
             "img": cloudinary_res["secure_url"],
-            "obituary": chat_gpt_res["text"],
+            "obituary": chat_gpt_res,
             "voice": voice_url
         }
     )
@@ -135,14 +132,11 @@ def create_signature(body, api_secret):
     exculde_keys = ["api_key", "source_types", "cloud_name"]
     timestamp = int(time.time())
     body["timestamp"] = timestamp
-    print("unsorted body:", body)
     # sort body keys
     sorted_body = sort_dict(body, exculde_keys)
-    print("sorted body:", sorted_body)
     # create string with sorted keys
     query_string = create_query_string(sorted_body)
     query_string_append = f"{query_string}{api_secret}"
-    print("query string:", query_string_append)
     hashed = hashlib.sha1(query_string_append.encode())
     signature = hashed.hexdigest()
     return signature
@@ -171,14 +165,12 @@ def ask_gpt(prompt):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {OPENAI_KEY}"
     }
-    print("headers created")
     body = {
         "model":"text-davinci-003",
         "prompt": prompt,
-        "max_tokens": 50,
-        "temperature": 0.2
+        "max_tokens": 400,
+        "temperature": 0.2,
     }
-    print("body created")
 
     res = requests.post(url, headers=headers, json=body)
     print("request sent")
@@ -191,7 +183,7 @@ def read_this(text, name):
     client = boto3.client('polly')
     response = client.synthesize_speech(
     Engine='standard', 
-    LanguageCode='EN-US',
+    LanguageCode='en-US',
     OutputFormat='mp3',
     Text=text,
     TextType='text',
@@ -199,6 +191,7 @@ def read_this(text, name):
     )
 
     filename = f"{name}_obituary.mp3"
+    filename = os.path.join("/tmp", filename)
     with open(filename, "wb") as f:
         f.write(response["AudioStream"].read())
     
