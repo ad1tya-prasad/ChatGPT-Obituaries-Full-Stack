@@ -13,7 +13,7 @@ const Layout = (props) => {
   return (
     <>
       <header>
-        <h1>Header</h1>
+        <h1>The Last Show</h1>
         <button type="button" onClick={createObituary}>
           + Create new obituary
         </button>
