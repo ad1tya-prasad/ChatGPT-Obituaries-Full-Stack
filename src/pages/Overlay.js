@@ -34,6 +34,11 @@ const Overlay = (props) => {
       );
       if (response.ok) {
         // handle success response here
+        setIsButtonDisabled(false);
+        setIsLoading(false);
+        props.setInForm(false);
+        navigate("/");
+
       } else {
         // handle error response here
       }
