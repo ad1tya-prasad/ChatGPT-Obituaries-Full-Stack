@@ -159,3 +159,9 @@ input[type="text"] {
   margin-bottom: 35px;
   
 }
+
+.submit-button.loading {
+  background-color: gray;
+  cursor: not-allowed;
+}
+

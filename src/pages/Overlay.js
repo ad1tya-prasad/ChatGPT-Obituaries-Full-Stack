@@ -8,6 +8,7 @@ const Overlay = (props) => {
   const [dob, setDob] = useState("");
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const Overlay = (props) => {
     data.append("dob", dob);
     data.append("dod", dod);
 
+    setIsButtonDisabled(true);
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -38,6 +40,7 @@ const Overlay = (props) => {
     } catch (error) {
       // handle fetch error here
     } finally {
+      setIsButtonDisabled(false);
       setIsLoading(false);
     }
   };
@@ -77,7 +80,6 @@ const Overlay = (props) => {
             placeholder="Name of the Deceased"
             style={{ fontSize: "20px" }}
           />
-
           <div>
             Born:
             <input
@@ -95,10 +97,10 @@ const Overlay = (props) => {
             />
           </div>
           <button
-            className="submit-button"
+            className={`submit-button ${isLoading ? "loading" : ""}`}
             type="submit"
             onClick={onSubmitForm}
-            disabled={isLoading} // disable the button if isLoading is true
+            disabled={isLoading}
           >
             {isLoading ? "Loading..." : "Write Obituary"}
           </button>
