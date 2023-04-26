@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Overlay = (props) => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [dod, setDod] = useState("");
   const [dob, setDob] = useState("");
@@ -26,10 +29,19 @@ const Overlay = (props) => {
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   };
+  
+  const onCloseOverlay = () => {
+    props.setInForm(false);
+    navigate("/");
+  };
+  
 
   return (
     <div className="overlay">
       <div className="overlay-content">
+        <button className="close-button" onClick={onCloseOverlay}>
+          X
+        </button>
         <form onSubmit={onSubmitForm}>
           <input
             type="file"

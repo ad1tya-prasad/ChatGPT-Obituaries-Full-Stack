@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Overlay from "./Overlay";
 
-// Put the reg layout here bbg
-const Layout = (props) => {
+const Layout = () => {
   const navigate = useNavigate();
+  const [inForm, setInForm] = useState(false);
+  
   const createObituary = () => {
-    console.log("createObituary");
-    props.setInForm(true);
-    console.log(props.inForm);
-    navigate("/New-Obituary");
+    setInForm(true);
   };
-
+  
   return (
     <>
       <header>
@@ -19,8 +19,10 @@ const Layout = (props) => {
         </button>
       </header>
       <h1 className="noObituary">No Obituary Yet.</h1>
+      {inForm && <Overlay setInForm={setInForm} />}
     </>
   );
+  
 };
 
 export default Layout;
