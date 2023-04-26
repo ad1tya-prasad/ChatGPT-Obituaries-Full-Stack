@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 const Overlay = (props) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -29,12 +28,11 @@ const Overlay = (props) => {
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   };
-  
+
   const onCloseOverlay = () => {
     props.setInForm(false);
     navigate("/");
   };
-  
 
   return (
     <div className="overlay">
@@ -42,34 +40,48 @@ const Overlay = (props) => {
         <button className="close-button" onClick={onCloseOverlay}>
           X
         </button>
-        <form onSubmit={onSubmitForm}>
-          <input
-            type="file"
-            required
-            accept="images/*"
-            onChange={(e) => onFileChange(e)}
-          />
+        <form onSubmit={onSubmitForm} className="form">
+          <h1>Create a New Obituary</h1>
+          <img src="/obituary.png" alt="obituary" className="obituary-img" />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>Select an image for the deceased:</span>
+            <input
+              type="file"
+              required
+              accept="images/*"
+              onChange={(e) => onFileChange(e)}
+              style={{ marginLeft: "10px"}}
+            />
+          </div>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
+            placeholder="Name of the Deceased"
+            style={{fontSize: "20px"}}
           />
+
           <div>
-            Date of Birth:
+            Born:
             <input
               type="datetime-local"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
+              className="date"
             />
-            Date of Death:
+            Died:
             <input
               type="datetime-local"
               value={dod}
               onChange={(e) => setDod(e.target.value)}
+              className="date"
             />
           </div>
-          <button type="submit" onClick={onSubmitForm}>
+          <button
+            className="submit-button"
+            type="submit"
+            onClick={onSubmitForm}
+          >
             Submit
           </button>
         </form>
