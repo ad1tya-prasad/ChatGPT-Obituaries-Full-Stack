@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Overlay from "./Overlay";
 
@@ -15,6 +16,27 @@ const Layout = () => {
   const addImage = (newImage) => {
     setImages([...images, newImage]);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://atljom7p67ty535xlh7ygxv24m0ntzyj.lambda-url.ca-central-1.on.aws/",
+          {
+            method: "GET",
+          }
+        );
+        console.log(response.status); // check response status
+        const data = await response.json();
+        console.log(data); // check data being returned
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+  
+
   return (
     <>
       <header>
@@ -31,8 +53,24 @@ const Layout = () => {
             <div className="image" key={index}>
               <img src={URL.createObjectURL(image.file)} alt={image.name} />
               <h2>{image.name}</h2>
-              <p>Born: {image.dob}</p>
-              <p>Died: {image.dod}</p>
+              <div className="dates">
+              <p className="birth-date">
+                {" "}
+                {new Date(image.dob).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+                <p className="death-date">
+                {"‎ - "}
+                {new Date(image.dod).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
             </div>
           ))}
         </div>
