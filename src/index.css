@@ -210,5 +210,14 @@ input[type="text"] {
   font-size: 14px;
 }
 
+.birth-date,
+.death-date {
+  display: inline;
+}
+
+.dates {
+  display: flex;
+  flex-direction: row;
+}
 
 

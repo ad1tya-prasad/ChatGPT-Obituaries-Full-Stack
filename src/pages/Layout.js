@@ -30,8 +30,24 @@ const Layout = () => {
           <div className="image" key={index}>
             <img src={URL.createObjectURL(image.file)} alt={image.name} />
             <h2>{image.name}</h2>
-            <p>Born: {image.dob}</p>
-            <p>Died: {image.dod}</p>
+            <div className="dates">
+              <p className="birth-date">
+                {" "}
+                {new Date(image.dob).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+              <p className="death-date">
+                {"‎ - "}
+                {new Date(image.dod).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
           </div>
         ))}
       </div>
