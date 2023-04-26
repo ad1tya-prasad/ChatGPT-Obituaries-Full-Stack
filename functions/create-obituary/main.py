@@ -168,9 +168,10 @@ def ask_gpt(prompt):
     body = {
         "model":"text-davinci-003",
         "prompt": prompt,
-        "max_tokens": 400,
+        "max_tokens": 100,
         "temperature": 0.2,
     }
+    print('sending request in ask_gpt')
 
     res = requests.post(url, headers=headers, json=body)
     print("request sent")
