@@ -10,11 +10,16 @@ const Overlay = (props) => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    if (!name || !dob || !dod || !file) {
+      alert("Please fill all fields!");
+      return;
+    }
     const data = new FormData();
     data.append("file", file);
     data.append("name", name);
     data.append("dob", dob);
     data.append("dod", dod);
+  
 
     const promise = await fetch(
       "https://46ztutzdfa27mynq26mrqnfflu0vdjat.lambda-url.ca-central-1.on.aws/",
@@ -24,6 +29,7 @@ const Overlay = (props) => {
       }
     );
   };
+  
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -50,7 +56,7 @@ const Overlay = (props) => {
               required
               accept="images/*"
               onChange={(e) => onFileChange(e)}
-              style={{ marginLeft: "10px"}}
+              style={{ marginLeft: "10px" }}
             />
           </div>
           <input
@@ -58,7 +64,7 @@ const Overlay = (props) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name of the Deceased"
-            style={{fontSize: "20px"}}
+            style={{ fontSize: "20px" }}
           />
 
           <div>
@@ -82,7 +88,7 @@ const Overlay = (props) => {
             type="submit"
             onClick={onSubmitForm}
           >
-            Submit
+            Write Obituary
           </button>
         </form>
       </div>
