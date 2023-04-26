@@ -37,7 +37,7 @@ const Layout = () => {
       }
     };
     fetchData();
-  }, [inForm]);
+  }, [inForm === false]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +73,7 @@ const Layout = () => {
       ) : (
         <div className="image-container">
           {data.map((image, index) => (
-            <div className="image" key={index}>
+            <div className="image" key={index} id={index}>
               <img src={image.img} alt={image.name} />
               <h2>{image.name}</h2>
               <div className="dates">
@@ -95,19 +95,37 @@ const Layout = () => {
                 </p>
               </div>
               <p className="desc">{image.obituary}</p>
+              <div className="play-button">
                 <button
                   type="button"
                   value="sound"
                   className="play-button"
                   id="music-toggle"
+                  src={image.audio}
                   onClick={() => {
-                    let audio = new Audio(image.voice);
-                    const btn = document.getElementById("music-toggle");
-                    audio.play();
+                    let parent = document.getElementById(index);
+                    let audio = parent.children[4];
+                    let audiobtn = audio.children[0];
+                    let audiotag = new Audio(image.voice);
+                    console.log(audio);
+                    if (audio.classList.contains("play-button")) {
+                      audio.classList.remove("play-button");
+                      audio.classList.add("pause-button");
+                      audiobtn.innerHTML = "| |";
+                      console.log("playing");
+                      audiotag.play();
+                    } else {
+                      audio.classList.remove("pause-button");
+                      audio.classList.add("play-button");
+                      audiobtn.innerHTML = "&#9658;";
+                      console.log("pausing");
+                      audiotag.pause();
+                    }
                   }}
                 >
                   &#9658;
                 </button>
+              </div>
             </div>
           ))}
         </div>

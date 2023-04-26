@@ -45,11 +45,11 @@ def lambda_handler(event, body):
     
 
     # saving img to cloudinary url
-    cloudinary_res = cloudinary_Upload_API(file_name) #, extra_params={"eagers": "e_art:zorro"}
+    cloudinary_res = cloudinary_Upload_API(file_name, extra_params={"eager": "e_art:zorro"}) #, extra_params={"eagers": "e_art:zorro"}
     print("img saved to cloudinary:", cloudinary_res["secure_url"])
     
     # saving chat GPT response
-    chat_gpt_res = ask_gpt(f"write a 100 token obituary about a fictional character named {name} who was born on {born} and died on {died}.") # f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}."
+    chat_gpt_res = ask_gpt(f"write a 3 full sentence obituary that doesnt pass 100 tokens about a fictional character named {name} who was born on {born} and died on {died}.") # f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}."
     print("chat gpt response saved", chat_gpt_res)
 
     # saving voice url
@@ -105,7 +105,8 @@ def cloudinary_Upload_API(filename, resource_type="image", extra_params=None):
     body = {
         "api_key": api_key,
     }
-    # body.update(extra_params)
+    if extra_params:
+        body.update(extra_params)
 
     files = {
         "file": open(filename, "rb")
