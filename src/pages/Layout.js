@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 import Overlay from "./Overlay";
 
@@ -15,6 +15,26 @@ const Layout = () => {
   const addImage = (newImage) => {
     setImages([...images, newImage]);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://atljom7p67ty535xlh7ygxv24m0ntzyj.lambda-url.ca-central-1.on.aws/",
+          {
+            method: "GET",
+          }
+        );
+        console.log(response.status); // check response status
+        const data = await response.json();
+        console.log(data); // check data being returned
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+  
 
   return (
     <>
