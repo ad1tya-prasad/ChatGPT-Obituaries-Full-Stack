@@ -15,10 +15,10 @@ const Layout = (props) => {
       <header>
         <h1>The Last Show</h1>
         <button type="button" onClick={createObituary}>
-          + Create new obituary
+          + New Obituary
         </button>
       </header>
-      <h1>Layout</h1>
+      <h1 className="noObituary">No Obituary Yet.</h1>
     </>
   );
 };
