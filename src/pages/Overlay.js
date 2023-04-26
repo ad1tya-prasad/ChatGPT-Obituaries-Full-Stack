@@ -7,6 +7,7 @@ const Overlay = (props) => {
   const [dod, setDod] = useState("");
   const [dob, setDob] = useState("");
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -19,17 +20,27 @@ const Overlay = (props) => {
     data.append("name", name);
     data.append("dob", dob);
     data.append("dod", dod);
-  
 
-    const promise = await fetch(
-      "https://46ztutzdfa27mynq26mrqnfflu0vdjat.lambda-url.ca-central-1.on.aws/",
-      {
-        method: "POST",
-        body: data,
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        "https://46ztutzdfa27mynq26mrqnfflu0vdjat.lambda-url.ca-central-1.on.aws/",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+      if (response.ok) {
+        // handle success response here
+      } else {
+        // handle error response here
       }
-    );
+    } catch (error) {
+      // handle fetch error here
+    } finally {
+      setIsLoading(false);
+    }
   };
-  
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -87,8 +98,9 @@ const Overlay = (props) => {
             className="submit-button"
             type="submit"
             onClick={onSubmitForm}
+            disabled={isLoading} // disable the button if isLoading is true
           >
-            Write Obituary
+            {isLoading ? "Loading..." : "Write Obituary"}
           </button>
         </form>
       </div>
