@@ -53,10 +53,10 @@ const Overlay = (props) => {
 
   return (
     <div className="overlay">
+      <button className="close-button" onClick={onCloseOverlay}>
+        &#x2715;
+      </button>
       <div className="overlay-content">
-        <button className="close-button" onClick={onCloseOverlay}>
-          X
-        </button>
         <form onSubmit={onSubmitForm} className="form">
           <h1>Create a New Obituary</h1>
           <img src="/obituary.png" alt="obituary" className="obituary-img" />
