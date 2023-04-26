@@ -93,7 +93,8 @@ const Layout = () => {
                     year: "numeric",
                   })}
                 </p>
-                <p className="desc">{image.obituary}</p>
+              </div>
+              <p className="desc">{image.obituary}</p>
                 <button
                   type="button"
                   value="sound"
@@ -107,7 +108,6 @@ const Layout = () => {
                 >
                   &#9658;
                 </button>
-              </div>
             </div>
           ))}
         </div>
