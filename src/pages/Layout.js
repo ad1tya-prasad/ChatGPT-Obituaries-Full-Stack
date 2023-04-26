@@ -94,7 +94,7 @@ const Layout = () => {
                   })}
                 </p>
               </div>
-              <p className="desc">{image.obituary}</p>
+              <p className="desc" style={{fontFamily:"Satisfy"}}>{image.obituary}</p>
                 <button
                   type="button"
                   value="sound"
