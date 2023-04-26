@@ -49,7 +49,7 @@ def lambda_handler(event, body):
     print("img saved to cloudinary:", cloudinary_res["secure_url"])
     
     # saving chat GPT response
-    chat_gpt_res = ask_gpt(f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}.") # f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}."
+    chat_gpt_res = ask_gpt(f"write a 100 token obituary about a fictional character named {name} who was born on {born} and died on {died}.") # f"write an obituary about a fictional character named {name} who was born on {born} and died on {died}."
     print("chat gpt response saved", chat_gpt_res)
 
     # saving voice url
