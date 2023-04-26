@@ -165,3 +165,50 @@ input[type="text"] {
   cursor: not-allowed;
 }
 
+.image-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 800px) {
+  .image-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .image-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+.image img {
+  height: 300px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.image h2 {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.image p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+
+

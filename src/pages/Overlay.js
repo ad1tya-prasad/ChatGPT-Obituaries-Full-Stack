@@ -34,6 +34,8 @@ const Overlay = (props) => {
       );
       if (response.ok) {
         // handle success response here
+        const newImage = { name, dob, dod, file };
+        props.addImage(newImage);
         setIsButtonDisabled(false);
         setIsLoading(false);
         props.setInForm(false);
