@@ -16,7 +16,8 @@ locals {
   function_name = "create-obituary-30140288"
   second_function_name = "get-obituary-30140288"
   handler_name  = "main.lambda_handler"
-  artifact_name = "artifact.zip"
+  create_artifact = "../functions/create-obituary/artifact.zip"
+  get_artifact = "../functions/get-obituaries/artifact.zip"
 }
 
 # create archive file from main.py
@@ -25,7 +26,7 @@ data "archive_file" "create-obituary-30140288" {
   # this file (main.py) needs to exist in the same folder as this 
   # Terraform configuration file
   source_dir = "../functions/create-obituary"
-  output_path = local.artifact_name
+  output_path = local.create_artifact
 }
 
 # create a role for the Lambda function to assume
@@ -53,7 +54,7 @@ resource "aws_lambda_function" "create-obituary-30140288" {
   role             = aws_iam_role.lambda.arn
   function_name    = local.function_name
   handler          = local.handler_name
-  filename         = local.artifact_name
+  filename         = local.create_artifact
   source_code_hash = data.archive_file.create-obituary-30140288.output_base64sha256
   timeout = 10
 
@@ -64,14 +65,14 @@ resource "aws_lambda_function" "create-obituary-30140288" {
 data "archive_file" "get-obituary-30140288" {
   type = "zip"
   source_dir = "../functions/get-obituaries"
-  output_path = local.artifact_name
+  output_path = local.get_artifact
 }
 
 resource "aws_lambda_function" "get-obituary-30140288" {
   role             = aws_iam_role.lambda.arn
   function_name    = local.second_function_name
   handler          = local.handler_name
-  filename         = local.artifact_name
+  filename         = local.get_artifact
   source_code_hash = data.archive_file.get-obituary-30140288.output_base64sha256
 
   runtime = "python3.9"
@@ -92,7 +93,7 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "dynamodb:PutItem",
-        "dynamodb:Query",
+        "dynamodb:Scan",
         "ssm:GetParametersByPath",
         "polly:SynthesizeSpeech"
       ],

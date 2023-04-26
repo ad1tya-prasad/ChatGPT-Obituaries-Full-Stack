@@ -35,12 +35,13 @@ header button {
   justify-content: center;
   align-items: center;
   border: none;
+  background-color: none;
 }
 
 header button:hover {
   cursor: pointer;
-  background-color: gray;
   color: white;
+  background-color: rgba(113, 113, 113, 0.8);
 }
 
 .overlay {
