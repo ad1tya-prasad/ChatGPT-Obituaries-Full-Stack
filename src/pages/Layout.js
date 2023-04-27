@@ -112,7 +112,10 @@ const Layout = () => {
                     src={image.audio}
                     onClick={() => {
                       let parent = document.getElementById(index);
-                      let audio = parent.children[4];
+                      console.log(parent);
+                      let audioupper = parent.children[3];
+                      console.log(audioupper);
+                      let audio = audioupper.children[1];
                       let audiobtn = audio.children[0];
                       let audiotag = new Audio(image.voice);
                       console.log(audio);
