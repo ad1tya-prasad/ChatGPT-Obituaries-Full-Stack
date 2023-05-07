@@ -13,7 +13,7 @@ The back end of this application consists of of 2 AWS lambda functions and an AW
 The two lambda functions are:
 
   - `get-obituaries`: to retrieve all the obituaries. Function URL only allows `GET` requests
-  - `create-obituary`: to create a new obituary, this function is a bit more complicated;
+  - `create-obituary`: to create a new obituary, this function is a bit more complicated:
         1. It first reads all the data from the user (including the image)
         2. then, it stores the image into Cloudinary, followed by generating an obituary for the given person using ChatGPT.
         3. Further, it takes the generated obituary and uses Amazon Polly to generate an mp3 file which then gets stored into Cloudinary as well.
