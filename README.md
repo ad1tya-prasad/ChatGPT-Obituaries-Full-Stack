@@ -14,10 +14,10 @@ The two lambda functions are:
 
   - `get-obituaries`: to retrieve all the obituaries. Function URL only allows `GET` requests
   - `create-obituary`: to create a new obituary, this function is a bit more complicated:
-        1. It first reads all the data from the user (including the image)
-        2. then, it stores the image into Cloudinary, followed by generating an obituary for the given person using ChatGPT.
-        3. Further, it takes the generated obituary and uses Amazon Polly to generate an mp3 file which then gets stored into Cloudinary as well.
-        4. Lastly, it stores all the given data of the user along with the urls for the image and speech files being stored in Cloudinary.
+        - It first reads all the data from the user (including the image)
+        - then, it stores the image into Cloudinary, followed by generating an obituary for the given person using ChatGPT.
+        - Further, it takes the generated obituary and uses Amazon Polly to generate an mp3 file which then gets stored into Cloudinary as well.
+        - Lastly, it stores all the given data of the user along with the urls for the image and speech files being stored in Cloudinary.
 
 Note: The API keys needed for each API call are stored securly using AWS Systems Manager in Parameter Store. They are read using the AWS Systems Manager API.
 
