@@ -4,7 +4,7 @@ This full stack application uses React and AWS that generates obituaries for peo
 
 ## Front End
 
-The front end of this application is created using React and is hosted on Netlify, you can find the link [here]().
+The front end of this application is created using React and is hosted on Netlify, you can find the website [here](obituary-maker.netlify.app) (obituary-maker.netlify.app).
 
 ## Back End
 
