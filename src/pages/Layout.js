@@ -64,7 +64,7 @@ const Layout = () => {
   return (
     <>
       <header>
-        <h1>The Last Show</h1>
+        <h1>Obituary Generator</h1>
         <button type="button" onClick={createObituary}>
           + New Obituary
         </button>
