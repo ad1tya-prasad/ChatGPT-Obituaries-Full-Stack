@@ -1,4 +1,4 @@
-# Fake Obituaries Full Stack Project
+# ChatGPT Obituaries Full Stack Project
 
 This full stack application uses React and AWS that generates obituaries for people. It uses [ChatGPT's Completion API](https://platform.openai.com/docs/api-reference/making-requests) to generate an obituary, along with [Amazon Polly](https://aws.amazon.com/polly/) to turn the obituary into speech, and the [Cloudinary Upload API](https://cloudinary.com/documentation/image_upload_api_reference) to store the speech and a picture of the deceased (may they rest in peace).
 
